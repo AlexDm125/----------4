@@ -78,6 +78,13 @@
             <button type="submit">Підтвердити</button>
             <button type="button" onclick="clearForm()">Очистити</button>
         </form>
+
+        <h2>Результати опитування</h2>
+        <form>
+            <textarea id="messageOutput" rows="10" cols="50" readonly></textarea><br>
+            <button type="button" onclick="sendEmail()">Надіслати результати на пошту</button>
+        </form>
+
         <script>
             function validateForm() {
                 // Перевірка Radio
@@ -118,12 +125,27 @@
                         return false;
                     }
                 }
+
+                // Перенесення результатів
+                let output = "Результати опитування:\n\n";
+                output += "Задоволення сайтом: " + document.querySelector('input[name="siteSatisfaction"]:checked').value + "\n";
+                output += "Використані функції: " + Array.from(document.querySelectorAll('input[name="featuresUsed"]:checked')).map(checkbox => checkbox.value).join(", ") + "\n";
+                for (let i = 1; i <= 5; i++) {
+                    output += "Коментар " + i + ": " + document.getElementById('textarea' + i).value + "\n";
+                }
+
+                document.getElementById('messageOutput').value = output;
+                return false; // Запобігання відправлення форми
             }
 
             function clearForm() {
                 document.getElementById('surveyForm').reset();
             }
 
+            function sendEmail() {
+                let emailBody = document.getElementById('messageOutput').value;
+                window.location.href = "mailto:example@gmail.com?subject=Результати%20опитування&body=" + encodeURIComponent(emailBody);
+            }
         </script>
     </section>
     
